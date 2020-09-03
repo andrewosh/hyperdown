@@ -27,11 +27,10 @@
     "levelup": "^4.4.0",
     "random-access-memory": "^3.1.1",
     "standard": "^10.0.3",
+    "hyperbee": "0.0.14",
     "tape": "^4.8.0"
   },
   "dependencies": {
-    "abstract-leveldown": "^6.3.0",
-    "hyperbee": "0.0.14",
-    "inherits": "^2.0.4"
+    "abstract-leveldown": "^6.3.0"
   }
 }
