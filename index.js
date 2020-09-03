@@ -19,9 +19,11 @@ module.exports = class HyperDown extends AbstractLevelDOWN {
     // Quick check that will pass for valid keys.
     else if (typeof key === 'string') return key
     else if (Buffer.isBuffer(key) && EMPTY.equals(key)) throw new Error('key cannot be an empty Buffer')
-    else if ((key instanceof Array) && key.length === 0) throw new Error('key cannot be an empty string')
+    else if (Array.isArray(key)) {
+      if (key.length === 0) throw new Error('key cannot be an empty Array')
+      key = key.join(',')
+    }
     else if (typeof key === 'number' || typeof key === 'boolean') key = String(key)
-    else if (Array.isArray(key)) key = key.join(',')
     return key
   }
 
