@@ -29,16 +29,17 @@ module.exports = class HyperDown extends AbstractLevelDOWN {
     return value
   }
 
-  _open (opts, cb) {
+  _open (_, cb) {
     // Open options are not handled, because a Hyperbee must be passed in as a constructor arg.
     if (!this.tree) return process.nextTick(cb, new Error('A Hyperbee must be provided as a constructor argument'))
-    return this.tree.ready().then(() => process.nextTick(cb, null), err => process.nextTick(cb, err))
+
+    return this.tree.ready().then(cb, err => cb(err))
   }
 
   _get (key, opts, cb) {
     this.tree.get(key, opts).then(node => {
       if (!node || !node.value) {
-        let err = new Error('NotFound')
+        const err = new Error('NotFound')
         err.notFound = true
         return cb(err)
       }
@@ -46,11 +47,11 @@ module.exports = class HyperDown extends AbstractLevelDOWN {
     }, err => cb(err))
   }
 
-  _put (key, value, opts, cb) {
+  _put (key, value, _, cb) {
     return this.tree.put(key, value).then(() => cb(null), err => cb(err))
   }
 
-  _del (key, opts, cb) {
+  _del (key, _, cb) {
     return this.tree.del(key).then(() => cb(null), err => cb(err))
   }
 
@@ -89,7 +90,7 @@ class HyperIterator extends AbstractIterator {
     this.opts = opts
 
     // Set in first next
-    
+
     this._keyAsBuffer = opts.keyAsBuffer
     this._valueAsBuffer = opts.valueAsBuffer
   }
@@ -98,7 +99,7 @@ class HyperIterator extends AbstractIterator {
     if (!cb) throw new Error('next() requires a callback argument')
     if (!this.ite) {
       const stream = this.tree.createReadStream(this.opts)
-      this.ite = stream[Symbol.asyncIterator]() 
+      this.ite = stream[Symbol.asyncIterator]()
     }
     this.ite.next().then(({ value: node, done }) => {
       if (done) return cb(null)
@@ -109,7 +110,4 @@ class HyperIterator extends AbstractIterator {
         !this._valueAsBuffer ? node.value.toString('utf-8') : Buffer.from(node.value))
     }, err => cb(err))
   }
-}
-
-function ensureValidKey (key) {
 }
