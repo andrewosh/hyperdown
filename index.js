@@ -3,9 +3,6 @@ const {
   AbstractIterator
 } = require('abstract-leveldown')
 
-const EMPTY = Buffer.alloc(0)
-
-
 module.exports = class HyperDown extends AbstractLevelDOWN {
   constructor (tree) {
     super()
@@ -19,7 +16,7 @@ module.exports = class HyperDown extends AbstractLevelDOWN {
     else if (key === '') throw new Error('key cannot be an empty string')
     // Quick check that will pass for valid keys.
     else if (typeof key === 'string') return key
-    else if (Buffer.isBuffer(key) && EMPTY.equals(key)) throw new Error('key cannot be an empty Buffer')
+    else if (key instanceof Uint8Array && key.length === 0) throw new Error('key cannot be an empty Uint8Array')
     else if ((key instanceof Array) && key.length === 0) throw new Error('key cannot be an empty string')
     else if (typeof key === 'number' || typeof key === 'boolean') key = String(key)
     else if (Array.isArray(key)) key = key.join(',')
